@@ -5,39 +5,48 @@ sealed trait Shape {
   def sides: Int
   def perimeter: Double
   def area: Double
+  def color: Color
 
 }
 
 sealed trait Color {
 
-  def red(intensity: Double = 1.0)
-  def green(intensity: Double = 1.0)
-  val blue = 1.0
+  def red: Double
+  def green: Double
+  def blue: Double
 
-  def totalColorValue = this.red + this.green + this.blue
-
-  def customColor(red: Double, green: Double, blue: Double) = {
-
-    if (totalColorValue > 3.0 || totalColorValue < 0)
-      throw new IllegalArgumentException
-
-    this match {
-      case Circle(radius) => new Circle(radius)
-      case Square(size) => new Square(size)
-      case Rectangle(width, height) => new Rectangle(width, height)
-    }
-
-  }
-
-  def lightOrDark: String =
-    if (this.totalColorValue > 1.5)
-      "Light"
-    else
-      "Dark"
+  def isLight = (red + green + blue) / 3.0 > 0.5
+  def isDark = !isLight
 
 }
 
-case class Circle(radius: Double) extends Shape with Color {
+final case object Red extends Color{
+
+  val red = 1.0
+  val green = 0
+  val blue = 0
+
+}
+
+final case object Yellow extends Color{
+
+  val red = 1.0
+  val green = 1.0
+  val blue = 0
+
+}
+
+final case object Pink extends Color {
+
+  val red = 1.0
+  val green = 0
+  val blue = 1.0
+
+}
+
+final case class CustomColor(red: Double, green: Double, blue: Double) extends Color
+
+case class Circle(radius: Double, color: Color) extends Shape {
 
   val sides = 1
   val perimeter = 2 * math.Pi * radius
@@ -45,7 +54,7 @@ case class Circle(radius: Double) extends Shape with Color {
 
 }
 
-sealed trait Rectangular extends Shape with Color {
+sealed trait Rectangular extends Shape {
 
   def width: Int
   def height: Int
@@ -55,11 +64,34 @@ sealed trait Rectangular extends Shape with Color {
 
 }
 
-case class Rectangle(width: Int, height: Int) extends Rectangular
+case class Rectangle(width: Int, height: Int, color: Color) extends Rectangular
 
-case class Square(size: Int) extends Rectangular {
+case class Square(size: Int, color: Color) extends Rectangular {
 
   val width: Int = size
   val height: Int = size
+
+}
+
+object Draw {
+
+  def apply(shape: Shape) = shape match {
+
+    case Rectangle(width, height, color) => s"Retangulo ${Draw(color)} de largura ${width} e altura ${height}"
+    case Square(size, color) => s"Quadrado ${Draw(color)} de tamanho ${size}"
+    case Circle(radius, color) => s"Circulo ${Draw(color)} de radius ${radius}"
+
+  }
+
+  def apply(color: Color) = {
+    color match {
+
+      case Red => "red"
+      case Yellow => "yellow"
+      case Pink => "pink"
+      case color => if (color.isLight) "light" else "dark"
+
+    }
+  }
 
 }

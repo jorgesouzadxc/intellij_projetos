@@ -3,7 +3,7 @@ import model.cats.Cat
 import model.counter.Counter
 import model.films_and_directors.{Dad, Director, Film}
 import model.person.Person
-import model.shapes.{Circle, Draw, Rectangle, Square}
+import model.shapes._
 import model.visitors.{Anonymous, User, Visitors}
 
 object Main extends App {
@@ -61,16 +61,12 @@ object Main extends App {
   val us1 = new User("kjk", "jorgesouza1996@outlook.com")
   val us2 = new Anonymous("kkk")
 
-  val quad = new Square(100)
-  val retang = new Rectangle(220, 440)
-  val circ = new Circle(200)
+  val quad = new Square(100, Pink)
+  val retang = new Rectangle(220, 440, Red)
+  val circ = new Circle(200, new CustomColor(0.5, 0.5, 0.8))
 
   println(Draw(quad))
   println(Draw(retang))
   println(Draw(circ))
-
-  println(quad.lightOrDark)
-  val quad2 = quad.customColor(0.1, 0.5, 0.5)
-  println(quad2.lightOrDark)
 
 }
